@@ -1,0 +1,38 @@
+.container {
+    min-width: 1280px;
+    width: 1280px;
+    min-height: 100vh;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.container .game-item {
+    width: 200px;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: yellow;
+    gap: 10px;
+}
+
+.container .game-item .game-title {
+    font-size: 20px;
+}
+
+.container .game-item .game-button {
+    font-size: 20px;
+    width: 100%;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #333;
+    background-color: #eee;
+    text-decoration: none;
+}

@@ -1,0 +1,543 @@
+{% extends 'base.html' %}%}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/square_goofspiel.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="player-containers">
+        <div class="player-container color-gray">
+            <p class="player-name" id="opponent-name">Opponent</p>
+            <p class="player-score" id="opponent-score">♕0</p>
+<!--        p1 name / points-->
+<!--        cards-->
+        </div>
+        <div class="player-container color-gray">
+            <p class="player-name" id="player-name">Player</p>
+            <p class="player-score" id="player-score">♕0</p>
+            <div class="player-cards">
+                <div class="player-card-container">
+                    <button class="card-button">0</button>
+                    <div class="card-quantity">Unlimited</div>
+                </div>
+                <div class="player-card-container" id="player-card-1">
+                    <button class="card-button">1</button>
+                    <div class="card-quantity">x6</div>
+                </div>
+                <div class="player-card-container" id="player-card-2">
+                    <button class="card-button">2</button>
+                    <div class="card-quantity">x5</div>
+                </div>
+                <div class="player-card-container" id="player-card-3">
+                    <button class="card-button">3</button>
+                    <div class="card-quantity">x4</div>
+                </div>
+                <div class="player-card-container" id="player-card-4">
+                    <button class="card-button">4</button>
+                    <div class="card-quantity">x3</div>
+                </div>
+                <div class="player-card-container" id="player-card-5">
+                    <button class="card-button">5</button>
+                    <div class="card-quantity">x2</div>
+                </div>
+                <div class="player-card-container" id="player-card-6">
+                    <button class="card-button">6</button>
+                    <div class="card-quantity">x1</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="game-container">
+        <p>Round ?A</p>
+        <div class="game-board">
+            <div class="row-container">
+                <div class="square" id="square-1">
+                    <div class="square-column-value">1</div>
+                    <div class="square-row-container">
+                        <div class="square-row-value">1</div>
+                        <div class="square-inner"></div>
+                        <div class="square-row-value">1</div>
+                    </div>
+                    <div class="square-column-value">1</div>
+                </div>
+                <div class="square-horizontal-divider row-1"></div>
+                <div class="square" id="square-2">
+                    <div class="square-column-value">2</div>
+                    <div class="square-row-container">
+                        <div class="square-row-value">1</div>
+                        <div class="square-inner"></div>
+                        <div class="square-row-value">1</div>
+                    </div>
+                    <div class="square-column-value">2</div>
+                </div>
+                <div class="square-horizontal-divider row-1"></div>
+                <div class="square" id="square-3">
+                    <div class="square-column-value">3</div>
+                    <div class="square-row-container">
+                        <div class="square-row-value">1</div>
+                        <div class="square-inner"></div>
+                        <div class="square-row-value">1</div>
+                    </div>
+                    <div class="square-column-value">3</div>
+                </div>
+                <div class="square-horizontal-divider row-1"></div>
+                <div class="square" id="square-4">
+                    <div class="square-column-value">4</div>
+                    <div class="square-row-container">
+                        <div class="square-row-value">1</div>
+                        <div class="square-inner"></div>
+                        <div class="square-row-value">1</div>
+                    </div>
+                    <div class="square-column-value">4</div>
+                </div>
+                <div class="square-horizontal-divider row-1"></div>
+                <div class="square" id="square-5">
+                    <div class="square-column-value">5</div>
+                    <div class="square-row-container">
+                        <div class="square-row-value">1</div>
+                        <div class="square-inner"></div>
+                        <div class="square-row-value">1</div>
+                    </div>
+                    <div class="square-column-value">5</div>
+                </div>
+                <div class="square-horizontal-divider row-1"></div>
+                <div class="square" id="square-6">
+                    <div class="square-column-value">6</div>
+                    <div class="square-row-container">
+                        <div class="square-row-value">1</div>
+                        <div class="square-inner"></div>
+                        <div class="square-row-value">1</div>
+                    </div>
+                    <div class="square-column-value">6</div>
+                </div>
+                <div class="square-horizontal-divider row-1"></div>
+                <div class="square-row-points row-1">♕6</div>
+            </div>
+            <div class="row-container">
+                <div class="square-vertical-divider column-1"></div>
+                <div class="square-blank-divider"></div>
+                <div class="square-vertical-divider column-2"></div>
+                <div class="square-blank-divider"></div>
+                <div class="square-vertical-divider column-3"></div>
+                <div class="square-blank-divider"></div>
+                <div class="square-vertical-divider column-4"></div>
+                <div class="square-blank-divider"></div>
+                <div class="square-vertical-divider column-5"></div>
+                <div class="square-blank-divider"></div>
+                <div class="square-vertical-divider column-6"></div>
+                <div class="square-blank-divider"></div>
+                <div class="square-blank-divider-large"></div>
+            </div>
+            <div class="row-container">
+                <div class="square" id="square-7">
+                    <div class="square-column-value">1</div>
+                    <div class="square-row-container">
+                        <div class="square-row-value">2</div>
+                        <div class="square-inner"></div>
+                        <div class="square-row-value">2</div>
+                    </div>
+                    <div class="square-column-value">1</div>
+                </div>
+                <div class="square-horizontal-divider row-2"></div>
+                <div class="square" id="square-8">
+                    <div class="square-column-value">2</div>
+                    <div class="square-row-container">
+                        <div class="square-row-value">2</div>
+                        <div class="square-inner"></div>
+                        <div class="square-row-value">2</div>
+                    </div>
+                    <div class="square-column-value">2</div>
+                </div>
+                <div class="square-horizontal-divider row-2"></div>
+                <div class="square" id="square-9">
+                    <div class="square-column-value">3</div>
+                    <div class="square-row-container">
+                        <div class="square-row-value">2</div>
+                        <div class="square-inner"></div>
+                        <div class="square-row-value">2</div>
+                    </div>
+                    <div class="square-column-value">3</div>
+                </div>
+                <div class="square-horizontal-divider row-2"></div>
+                <div class="square" id="square-10">
+                    <div class="square-column-value">4</div>
+                    <div class="square-row-container">
+                        <div class="square-row-value">2</div>
+                        <div class="square-inner"></div>
+                        <div class="square-row-value">2</div>
+                    </div>
+                    <div class="square-column-value">4</div>
+                </div>
+                <div class="square-horizontal-divider row-2"></div>
+                <div class="square" id="square-11">
+                    <div class="square-column-value">5</div>
+                    <div class="square-row-container">
+                        <div class="square-row-value">2</div>
+                        <div class="square-inner"></div>
+                        <div class="square-row-value">2</div>
+                    </div>
+                    <div class="square-column-value">5</div>
+                </div>
+                <div class="square-horizontal-divider row-2"></div>
+                <div class="square" id="square-12">
+                    <div class="square-column-value">6</div>
+                    <div class="square-row-container">
+                        <div class="square-row-value">2</div>
+                        <div class="square-inner"></div>
+                        <div class="square-row-value">2</div>
+                    </div>
+                    <div class="square-column-value">6</div>
+                </div>
+                <div class="square-horizontal-divider row-2"></div>
+                <div class="square-row-points row-2">♕5</div>
+            </div>
+            <div class="row-container">
+                <div class="square-vertical-divider column-1"></div>
+                <div class="square-blank-divider"></div>
+                <div class="square-vertical-divider column-2"></div>
+                <div class="square-blank-divider"></div>
+                <div class="square-vertical-divider column-3"></div>
+                <div class="square-blank-divider"></div>
+                <div class="square-vertical-divider column-4"></div>
+                <div class="square-blank-divider"></div>
+                <div class="square-vertical-divider column-5"></div>
+                <div class="square-blank-divider"></div>
+                <div class="square-vertical-divider column-6"></div>
+                <div class="square-blank-divider"></div>
+                <div class="square-blank-divider-large"></div>
+            </div>
+            <div class="row-container">
+                <div class="square" id="square-13">
+                    <div class="square-column-value">1</div>
+                    <div class="square-row-container">
+                        <div class="square-row-value">3</div>
+                        <div class="square-inner"></div>
+                        <div class="square-row-value">3</div>
+                    </div>
+                    <div class="square-column-value">1</div>
+                </div>
+                <div class="square-horizontal-divider row-3"></div>
+                <div class="square" id="square-14">
+                    <div class="square-column-value">2</div>
+                    <div class="square-row-container">
+                        <div class="square-row-value">3</div>
+                        <div class="square-inner"></div>
+                        <div class="square-row-value">3</div>
+                    </div>
+                    <div class="square-column-value">2</div>
+                </div>
+                <div class="square-horizontal-divider row-3"></div>
+                <div class="square" id="square-15">
+                    <div class="square-column-value">3</div>
+                    <div class="square-row-container">
+                        <div class="square-row-value">3</div>
+                        <div class="square-inner"></div>
+                        <div class="square-row-value">3</div>
+                    </div>
+                    <div class="square-column-value">3</div>
+                </div>
+                <div class="square-horizontal-divider row-3"></div>
+                <div class="square" id="square-16">
+                    <div class="square-column-value">4</div>
+                    <div class="square-row-container">
+                        <div class="square-row-value">3</div>
+                        <div class="square-inner"></div>
+                        <div class="square-row-value">3</div>
+                    </div>
+                    <div class="square-column-value">4</div>
+                </div>
+                <div class="square-horizontal-divider row-3"></div>
+                <div class="square" id="square-17">
+                    <div class="square-column-value">5</div>
+                    <div class="square-row-container">
+                        <div class="square-row-value">3</div>
+                        <div class="square-inner"></div>
+                        <div class="square-row-value">3</div>
+                    </div>
+                    <div class="square-column-value">5</div>
+                </div>
+                <div class="square-horizontal-divider row-3"></div>
+                <div class="square" id="square-18">
+                    <div class="square-column-value">6</div>
+                    <div class="square-row-container">
+                        <div class="square-row-value">3</div>
+                        <div class="square-inner"></div>
+                        <div class="square-row-value">3</div>
+                    </div>
+                    <div class="square-column-value">6</div>
+                </div>
+                <div class="square-horizontal-divider row-3"></div>
+                <div class="square-row-points row-3">♕4</div>
+            </div>
+            <div class="row-container">
+                <div class="square-vertical-divider column-1"></div>
+                <div class="square-blank-divider"></div>
+                <div class="square-vertical-divider column-2"></div>
+                <div class="square-blank-divider"></div>
+                <div class="square-vertical-divider column-3"></div>
+                <div class="square-blank-divider"></div>
+                <div class="square-vertical-divider column-4"></div>
+                <div class="square-blank-divider"></div>
+                <div class="square-vertical-divider column-5"></div>
+                <div class="square-blank-divider"></div>
+                <div class="square-vertical-divider column-6"></div>
+                <div class="square-blank-divider"></div>
+                <div class="square-blank-divider-large"></div>
+            </div>
+            <div class="row-container">
+                <div class="square" id="square-19">
+                    <div class="square-column-value">1</div>
+                    <div class="square-row-container">
+                        <div class="square-row-value">4</div>
+                        <div class="square-inner"></div>
+                        <div class="square-row-value">4</div>
+                    </div>
+                    <div class="square-column-value">1</div>
+                </div>
+                <div class="square-horizontal-divider row-4"></div>
+                <div class="square" id="square-20">
+                    <div class="square-column-value">2</div>
+                    <div class="square-row-container">
+                        <div class="square-row-value">4</div>
+                        <div class="square-inner"></div>
+                        <div class="square-row-value">4</div>
+                    </div>
+                    <div class="square-column-value">2</div>
+                </div>
+                <div class="square-horizontal-divider row-4"></div>
+                <div class="square" id="square-21">
+                    <div class="square-column-value">3</div>
+                    <div class="square-row-container">
+                        <div class="square-row-value">4</div>
+                        <div class="square-inner"></div>
+                        <div class="square-row-value">4</div>
+                    </div>
+                    <div class="square-column-value">3</div>
+                </div>
+                <div class="square-horizontal-divider row-4"></div>
+                <div class="square" id="square-22">
+                    <div class="square-column-value">4</div>
+                    <div class="square-row-container">
+                        <div class="square-row-value">4</div>
+                        <div class="square-inner"></div>
+                        <div class="square-row-value">4</div>
+                    </div>
+                    <div class="square-column-value">4</div>
+                </div>
+                <div class="square-horizontal-divider row-4"></div>
+                <div class="square" id="square-23">
+                    <div class="square-column-value">5</div>
+                    <div class="square-row-container">
+                        <div class="square-row-value">4</div>
+                        <div class="square-inner"></div>
+                        <div class="square-row-value">4</div>
+                    </div>
+                    <div class="square-column-value">5</div>
+                </div>
+                <div class="square-horizontal-divider row-4"></div>
+                <div class="square" id="square-24">
+                    <div class="square-column-value">6</div>
+                    <div class="square-row-container">
+                        <div class="square-row-value">4</div>
+                        <div class="square-inner"></div>
+                        <div class="square-row-value">4</div>
+                    </div>
+                    <div class="square-column-value">6</div>
+                </div>
+                <div class="square-horizontal-divider row-4"></div>
+                <div class="square-row-points row-4">♕3</div>
+            </div>
+            <div class="row-container">
+                <div class="square-vertical-divider column-1"></div>
+                <div class="square-blank-divider"></div>
+                <div class="square-vertical-divider column-2"></div>
+                <div class="square-blank-divider"></div>
+                <div class="square-vertical-divider column-3"></div>
+                <div class="square-blank-divider"></div>
+                <div class="square-vertical-divider column-4"></div>
+                <div class="square-blank-divider"></div>
+                <div class="square-vertical-divider column-5"></div>
+                <div class="square-blank-divider"></div>
+                <div class="square-vertical-divider column-6"></div>
+                <div class="square-blank-divider"></div>
+                <div class="square-blank-divider-large"></div>
+            </div>
+            <div class="row-container">
+                <div class="square" id="square-25">
+                    <div class="square-column-value">1</div>
+                    <div class="square-row-container">
+                        <div class="square-row-value">5</div>
+                        <div class="square-inner"></div>
+                        <div class="square-row-value">5</div>
+                    </div>
+                    <div class="square-column-value">1</div>
+                </div>
+                <div class="square-horizontal-divider row-5"></div>
+                <div class="square" id="square-26">
+                    <div class="square-column-value">2</div>
+                    <div class="square-row-container">
+                        <div class="square-row-value">5</div>
+                        <div class="square-inner"></div>
+                        <div class="square-row-value">5</div>
+                    </div>
+                    <div class="square-column-value">2</div>
+                </div>
+                <div class="square-horizontal-divider row-5"></div>
+                <div class="square" id="square-27">
+                    <div class="square-column-value">3</div>
+                    <div class="square-row-container">
+                        <div class="square-row-value">5</div>
+                        <div class="square-inner"></div>
+                        <div class="square-row-value">5</div>
+                    </div>
+                    <div class="square-column-value">3</div>
+                </div>
+                <div class="square-horizontal-divider row-5"></div>
+                <div class="square" id="square-28">
+                    <div class="square-column-value">4</div>
+                    <div class="square-row-container">
+                        <div class="square-row-value">5</div>
+                        <div class="square-inner"></div>
+                        <div class="square-row-value">5</div>
+                    </div>
+                    <div class="square-column-value">4</div>
+                </div>
+                <div class="square-horizontal-divider row-5"></div>
+                <div class="square" id="square-29">
+                    <div class="square-column-value">5</div>
+                    <div class="square-row-container">
+                        <div class="square-row-value">5</div>
+                        <div class="square-inner"></div>
+                        <div class="square-row-value">5</div>
+                    </div>
+                    <div class="square-column-value">5</div>
+                </div>
+                <div class="square-horizontal-divider row-5"></div>
+                <div class="square" id="square-30">
+                    <div class="square-column-value">6</div>
+                    <div class="square-row-container">
+                        <div class="square-row-value">5</div>
+                        <div class="square-inner"></div>
+                        <div class="square-row-value">5</div>
+                    </div>
+                    <div class="square-column-value">6</div>
+                </div>
+                <div class="square-horizontal-divider row-5"></div>
+                <div class="square-row-points row-5">♕2</div>
+            </div>
+            <div class="row-container">
+                <div class="square-vertical-divider column-1"></div>
+                <div class="square-blank-divider"></div>
+                <div class="square-vertical-divider column-2"></div>
+                <div class="square-blank-divider"></div>
+                <div class="square-vertical-divider column-3"></div>
+                <div class="square-blank-divider"></div>
+                <div class="square-vertical-divider column-4"></div>
+                <div class="square-blank-divider"></div>
+                <div class="square-vertical-divider column-5"></div>
+                <div class="square-blank-divider"></div>
+                <div class="square-vertical-divider column-6"></div>
+                <div class="square-blank-divider"></div>
+                <div class="square-blank-divider-large"></div>
+            </div>
+            <div class="row-container">
+                <div class="square" id="square-31">
+                    <div class="square-column-value">1</div>
+                    <div class="square-row-container">
+                        <div class="square-row-value">6</div>
+                        <div class="square-inner"></div>
+                        <div class="square-row-value">6</div>
+                    </div>
+                    <div class="square-column-value">1</div>
+                </div>
+                <div class="square-horizontal-divider row-6"></div>
+                <div class="square" id="square-32">
+                    <div class="square-column-value">2</div>
+                    <div class="square-row-container">
+                        <div class="square-row-value">6</div>
+                        <div class="square-inner"></div>
+                        <div class="square-row-value">6</div>
+                    </div>
+                    <div class="square-column-value">2</div>
+                </div>
+                <div class="square-horizontal-divider row-6"></div>
+                <div class="square" id="square-33">
+                    <div class="square-column-value">3</div>
+                    <div class="square-row-container">
+                        <div class="square-row-value">6</div>
+                        <div class="square-inner"></div>
+                        <div class="square-row-value">6</div>
+                    </div>
+                    <div class="square-column-value">3</div>
+                </div>
+                <div class="square-horizontal-divider row-6"></div>
+                <div class="square" id="square-34">
+                    <div class="square-column-value">4</div>
+                    <div class="square-row-container">
+                        <div class="square-row-value">6</div>
+                        <div class="square-inner"></div>
+                        <div class="square-row-value">6</div>
+                    </div>
+                    <div class="square-column-value">4</div>
+                </div>
+                <div class="square-horizontal-divider row-6"></div>
+                <div class="square" id="square-35">
+                    <div class="square-column-value">5</div>
+                    <div class="square-row-container">
+                        <div class="square-row-value">6</div>
+                        <div class="square-inner"></div>
+                        <div class="square-row-value">6</div>
+                    </div>
+                    <div class="square-column-value">5</div>
+                </div>
+                <div class="square-horizontal-divider row-6"></div>
+                <div class="square" id="square-36">
+                    <div class="square-column-value">6</div>
+                    <div class="square-row-container">
+                        <div class="square-row-value">6</div>
+                        <div class="square-inner"></div>
+                        <div class="square-row-value">6</div>
+                    </div>
+                    <div class="square-column-value">6</div>
+                </div>
+                <div class="square-horizontal-divider row-6"></div>
+                <div class="square-row-points row-6">♕1</div>
+            </div>
+            <div class="row-container">
+                <div class="square-vertical-divider column-1"></div>
+                <div class="square-blank-divider"></div>
+                <div class="square-vertical-divider column-2"></div>
+                <div class="square-blank-divider"></div>
+                <div class="square-vertical-divider column-3"></div>
+                <div class="square-blank-divider"></div>
+                <div class="square-vertical-divider column-4"></div>
+                <div class="square-blank-divider"></div>
+                <div class="square-vertical-divider column-5"></div>
+                <div class="square-blank-divider"></div>
+                <div class="square-vertical-divider column-6"></div>
+                <div class="square-blank-divider"></div>
+                <div class="square-blank-divider-large"></div>
+            </div>
+            <div class="row-container">
+                <div class="square-column-points column-1">♕6</div>
+                <div class="square-blank-divider"></div>
+                <div class="square-column-points column-2">♕5</div>
+                <div class="square-blank-divider"></div>
+                <div class="square-column-points column-3">♕4</div>
+                <div class="square-blank-divider"></div>
+                <div class="square-column-points column-4">♕3</div>
+                <div class="square-blank-divider"></div>
+                <div class="square-column-points column-5">♕2</div>
+                <div class="square-blank-divider"></div>
+                <div class="square-column-points column-6">♕1</div>
+                <div class="square-blank-divider"></div>
+                <div class="square-blank-divider-large"></div>
+            </div>
+        </div>
+    </div>
+    <div class="game-log">
+<!--        self-explanatory-->
+    </div>
+</div>
+{% endblock %}
