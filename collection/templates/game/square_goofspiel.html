@@ -541,3 +541,18 @@
     </div>
 </div>
 {% endblock %}
+
+{% block script %}
+<script>
+    const socket = io();
+
+    socket.on('connect', (data) => {
+        console.log(data);
+    });
+
+//     for character in history
+//     if index = 0-11, 26-37, 52-63, 78-89, 104-115, 130-141: add A-F at respective squares
+//     if index = 12-23, 38-49, 64-75, 90-101, 116-127, 142-153: processMove(red, blue)
+//     processMove: updates card counts and board colors
+</script>
+{% endblock %}
