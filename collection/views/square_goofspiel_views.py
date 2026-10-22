@@ -1,6 +1,6 @@
 from collection import socketio
 from flask import Blueprint, render_template, request, redirect, url_for, session
-from flask_socketio import join_room, leave_room
+from flask_socketio import join_room, leave_room, emit
 import random
 
 # Blueprint: 라우팅 함수를 체계적으로 관리
@@ -23,31 +23,35 @@ def get_room(game_id):
 
 @socketio.on('connect')
 def on_connect():
+    # todo: error handling in case someone manually enters url without creating game
     sid = request.sid
     game_id = session.get('game_id')
     join_room(game_id)
 
     if active_games.get(game_id) is None:
-        active_games[game_id]['red'] = sid
-        active_games[game_id]['red_connected'] = True
-        active_games[game_id]['red_move'] = ''
-        active_games[game_id]['blue'] = ''
-        active_games[game_id]['blue_connected'] = False
-        active_games[game_id]['blue_move'] = ''
-        active_games[game_id]['history'] = ''
+        active_games[game_id] = {
+            'red': sid,
+            'red_connected': True,
+            'red_move': None,
+            'blue': '',
+            'blue_connected': False,
+            'blue_move': None,
+            'history': initialize_history()
+        }
     else:
         if active_games[game_id]['blue'] == '':
             active_games[game_id]['blue'] = sid
 
-        if active_games[game_id]['red'] == sid:
-            active_games[game_id]['red_connected'] = True
-            socketio.emit(('connect', {'data': 'You have connected as Red!'}))
-            socketio.emit(('connect', {'data': 'Your opponent has connected as Red!'}), to=game_id, include_self=False)
-        elif active_games[game_id]['blue'] == sid:
-            active_games[game_id]['blue_connected'] = True
-            socketio.emit(('connect', {'data': 'You have connected as Blue!'}))
-            socketio.emit(('connect', {'data': 'Your opponent has connected as Blue!'}), to=game_id, include_self=False)
-    return initialize_history
+    if active_games[game_id]['red'] == sid:
+        active_games[game_id]['red_connected'] = True
+        emit('game_connection', {'message': 'You have connected as Red!', 'color': 'red'})
+        emit('game_connection', {'message': 'Your opponent has connected as Red!'}, to=game_id, include_self=False)
+    elif active_games[game_id]['blue'] == sid:
+        active_games[game_id]['blue_connected'] = True
+        emit('game_connection', {'message': 'You have connected as Blue!', 'color': 'blue'})
+        emit('game_connection', {'message': 'Your opponent has connected as Blue!'}, to=game_id, include_self=False)
+
+    return
 
 @socketio.on('disconnect')
 def on_disconnect():
@@ -59,22 +63,47 @@ def on_disconnect():
     for room, room_details in active_games.items():
         if room_details['red'] == sid:
             room_details['red_connected'] = False
+            emit('game_connection', {'message': 'Red has disconnected!'}, to=game_id, include_self=False)
         if room_details['blue'] == sid:
             room_details['blue_connected'] = False
+            emit('game_connection', {'message': 'Blue has disconnected!'}, to=game_id, include_self=False)
         if room_details['red_connected'] == False and room_details['blue_connected'] == False:
             to_remove.append(room)
 
     for room in to_remove:
         active_games.pop(room)
 
-    # emit opponent has left the game
     return
 
 @socketio.on('move')
-def on_move():
+def on_move(move):
     sid = request.sid
-    # red_move = request.get('move')
-    # update room['history']
+    game_id = session.get('game_id')
+    if active_games[game_id]['red'] == sid:
+        active_games[game_id]['red_move'] = move
+    elif active_games[game_id]['blue'] == sid:
+        active_games[game_id]['blue_move'] = move
+
+    if active_games[game_id]['red_move'] and active_games[game_id]['blue_move']:
+        red_move = active_games[game_id]['red_move']
+        blue_move = active_games[game_id]['blue_move']
+        history = list(active_games[game_id]['history'])
+
+        index = history.index('x')
+        if index % 2 == 1:
+            index = index - 1
+
+        history[index] = red_move
+        history[index + 1] = blue_move
+        history = "".join(history)
+
+        active_games[game_id]['history'] = history
+        active_games[game_id]['red_move'] = None
+        active_games[game_id]['blue_move'] = None
+
+        emit('game_update', {'message': history}, to=game_id)
+    else:
+        emit('self_update', {'message': 'Waiting for opponent...'})
 
     # the game history is stored in a 154 character string where the positions of the characters will be converted to information
     # the first 12 digits means which 6 squares are up for bid at the start of a round. Each pair of numbers is the xy coordinates of squares.
@@ -84,6 +113,6 @@ def on_move():
     # x means waiting for a submission.
     # the next 2 digits means whether a player has clicked "continue" after the set of 6 rounds have finished.
     # x means waiting on a player, 1 means they have clicked "continue". There won't be a pair at the very end.
-
     # progress gamestate when both red_move and blue_move are filled then reset values
+
     return

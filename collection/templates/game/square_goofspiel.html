@@ -1,4 +1,4 @@
-{% extends 'base.html' %}%}
+{% extends 'base.html' %}
 
 {% block head %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/square_goofspiel.css') }}">
@@ -7,15 +7,15 @@
 {% block content %}
 <div class="container">
     <div class="player-containers">
-        <div class="player-container color-gray">
-            <p class="player-name" id="opponent-name">Opponent</p>
-            <p class="player-score" id="opponent-score">♕0</p>
+        <div class="player-container color-gray" id="opponent-container">
+            <p class="player-name">Opponent</p>
+            <p class="player-score">♕0</p>
 <!--        p1 name / points-->
 <!--        cards-->
         </div>
-        <div class="player-container color-gray">
-            <p class="player-name" id="player-name">Player</p>
-            <p class="player-score" id="player-score">♕0</p>
+        <div class="player-container color-gray" id="player-container">
+            <p class="player-name">Player</p>
+            <p class="player-score">♕0</p>
             <div class="player-cards">
                 <div class="player-card-container">
                     <button class="card-button">0</button>
@@ -545,9 +545,31 @@
 {% block script %}
 <script>
     const socket = io();
+    const playerContainer = document.getElementById('player-container');
+    const opponentContainer = document.getElementById('opponent-container');
 
-    socket.on('connect', (data) => {
-        console.log(data);
+    socket.on('game_connection', (response) => {
+        if (response.color) {
+            let playerColor = response.color;
+            let opponentColor = response.color == 'red' ? 'blue' : 'red';
+            playerContainer.classList.remove('color-gray')
+            playerContainer.classList.add(`color-${playerColor}`)
+            opponentContainer.classList.remove('color-gray')
+            opponentContainer.classList.add(`color-${opponentColor}`)
+        }
+        showToast(response.message);
+    });
+
+    socket.on('self_update', (response) => {
+
+        // showToast(response.message);
+    });
+
+    socket.on('game_update', (response) => {
+        // update game log
+        // update board
+        // update cards
+        // reset waiting for opponent message
     });
 
 //     for character in history
