@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/rules.css') }}">
+{% endblock %}
+
+{% block content %}
+<h1>Square Goofspiel</h1>
+
+<p>The game features a 6x6 <strong>scoring board</strong>, made up of 36 <strong>cells</strong>. There are 12 <strong>lines</strong> on the board, one for every row and column; this way, each cell of the board belongs to two lines.</p>
+
+<p>Each cell has two values, one for its horizontal line and one for its vertical line. Within a horizontal line, the value of a cell is determined by its column number, listed above the board. Similarly, within a vertical line, the value of a cell is determined by its row number, listed to the left of the board. As an example, the top-right cell has value 6 for the topmost horizontal line, and value 1 for the rightmost vertical line.</p>
+
+<p>Each line is worth an amount of points, increasing 1-6 from bottom to top and from right to left. The worth of a line is indicated below and to the right of the board, in circles.</p>
+
+{% endblock %}

@@ -9,8 +9,9 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(config)
 
-    from .views import main_views, square_goofspiel_views
+    from .views import main_views, rules_views, square_goofspiel_views
     app.register_blueprint(main_views.bp)
+    app.register_blueprint(rules_views.bp)
     app.register_blueprint(square_goofspiel_views.bp)
 
     socketio.init_app(app, cors_allowed_origins="*")

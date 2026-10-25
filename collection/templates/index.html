@@ -5,13 +5,13 @@
 {% endblock %}
 
 {% block content %}
-<div class="container p-20">
+<div class="main-container p-20">
     <div class="game-item p-20">
         <p class="game-title">Square Goofspiel</p>
         <a href="{{ url_for('main.create', game='square_goofspiel') }}" class="game-button create-button">
             Create Game
         </a>
-        <a data-game="Square Goofspiel" class="game-button rules-button">Rules</a>
+        <a href="{{ url_for('rules.square_goofspiel') }}" class="game-button rules-button" target="_blank">Rules</a>
     </div>
 </div>
 {% endblock %}
@@ -21,14 +21,14 @@
     const gameModal = new bootstrap.Modal(document.getElementById('gameModal'));
     const modalBody = document.querySelector('#gameModal .modal-body');
 
-    function showRules() {
-        modalBody.innerHTML = `<p style="text-align: center;">${this.dataset.game} Rules</p><br>`;
-        gameModal.show();
-    }
+    // function showRules() {
+    //     modalBody.innerHTML = `<p style="text-align: center;">${this.dataset.game} Rules</p><br>`;
+    //     gameModal.show();
+    // }
 
-    const rulesButtons = document.querySelectorAll('.rules-button');
-    rulesButtons.forEach(rulesButton => {
-        rulesButton.addEventListener("click", showRules);
-    });
+    // const rulesButtons = document.querySelectorAll('.rules-button');
+    // rulesButtons.forEach(rulesButton => {
+    //     rulesButton.addEventListener("click", showRules);
+    // });
 </script>
 {% endblock %}
