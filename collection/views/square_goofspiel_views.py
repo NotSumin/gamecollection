@@ -27,6 +27,7 @@ def on_connect():
     sid = request.sid
     game_id = session.get('game_id')
     join_room(game_id)
+    start = False
 
     if active_games.get(game_id) is None:
         active_games[game_id] = {
@@ -42,14 +43,17 @@ def on_connect():
         if active_games[game_id]['blue'] == '':
             active_games[game_id]['blue'] = sid
 
+    if active_games[game_id]['red'] != '' and active_games[game_id]['blue'] != '':
+        start = True
+
     if active_games[game_id]['red'] == sid:
         active_games[game_id]['red_connected'] = True
-        emit('game_connection', {'message': 'You have connected as Red!', 'color': 'red'})
-        emit('game_connection', {'message': 'Your opponent has connected as Red!'}, to=game_id, include_self=False)
+        emit('game_connection', {'message': 'You have connected as Red!', 'color': 'red', 'history': active_games[game_id]['history'], 'start': start})
+        emit('game_connection', {'message': 'Your opponent has connected as Red!', 'color': 'blue', 'history': active_games[game_id]['history'], 'start': start}, to=game_id, include_self=False)
     elif active_games[game_id]['blue'] == sid:
         active_games[game_id]['blue_connected'] = True
-        emit('game_connection', {'message': 'You have connected as Blue!', 'color': 'blue'})
-        emit('game_connection', {'message': 'Your opponent has connected as Blue!'}, to=game_id, include_self=False)
+        emit('game_connection', {'message': 'You have connected as Blue!', 'color': 'blue', 'history': active_games[game_id]['history'], 'start': start})
+        emit('game_connection', {'message': 'Your opponent has connected as Blue!', 'color': 'red', 'history': active_games[game_id]['history'], 'start': start}, to=game_id, include_self=False)
 
     return
 
@@ -101,9 +105,7 @@ def on_move(move):
         active_games[game_id]['red_move'] = None
         active_games[game_id]['blue_move'] = None
 
-        emit('game_update', {'message': history}, to=game_id)
-    else:
-        emit('self_update', {'message': 'Waiting for opponent...'})
+        emit('game_update', {'history': history}, to=game_id)
 
     # the game history is stored in a 154 character string where the positions of the characters will be converted to information
     # the first 12 digits means which 6 squares are up for bid at the start of a round. Each pair of numbers is the xy coordinates of squares.

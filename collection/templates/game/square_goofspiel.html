@@ -52,37 +52,37 @@
                     <p class="player-score">👑0</p>
                 </div>
                 <div class="player-cards">
-                    <div class="player-card-container">
-                        <button class="card-button">0</button>
+                    <div class="player-card-container" id="player-card-0">
+                        <button class="card-button" disabled onclick="submitMove('0')">0</button>
                         <div class="card-quantity">ꝏ</div>
                     </div>
                     <div class="player-card-container" id="player-card-1">
-                        <button class="card-button">1</button>
+                        <button class="card-button" disabled onclick="submitMove('1')">1</button>
                         <div class="card-quantity">x6</div>
                     </div>
                     <div class="player-card-container" id="player-card-2">
-                        <button class="card-button">2</button>
+                        <button class="card-button" disabled onclick="submitMove('2')">2</button>
                         <div class="card-quantity">x5</div>
                     </div>
                     <div class="player-card-container" id="player-card-3">
-                        <button class="card-button">3</button>
+                        <button class="card-button" disabled onclick="submitMove('3')">3</button>
                         <div class="card-quantity">x4</div>
                     </div>
                     <div class="player-card-container" id="player-card-4">
-                        <button class="card-button">4</button>
+                        <button class="card-button" disabled onclick="submitMove('4')">4</button>
                         <div class="card-quantity">x3</div>
                     </div>
                     <div class="player-card-container" id="player-card-5">
-                        <button class="card-button">5</button>
+                        <button class="card-button" disabled onclick="submitMove('5')">5</button>
                         <div class="card-quantity">x2</div>
                     </div>
                     <div class="player-card-container" id="player-card-6">
-                        <button class="card-button">6</button>
+                        <button class="card-button" disabled onclick="submitMove('6')">6</button>
                         <div class="card-quantity">x1</div>
                     </div>
                 </div>
             </div>
-            <div class="misc-message"></div>
+            <div id="misc-message"></div>
         </div>
     </div>
     <div class="game-container">
@@ -363,6 +363,11 @@
     const opponentCardQuantity = document.querySelectorAll('#opponent-container .card-quantity');
     const miscMessage = document.getElementById('misc-message');
     const gameRound = document.getElementById('game-round');
+    const cardButtons = document.querySelectorAll('#player-container .card-button');
+    const playerScore = document.querySelector('#player-container .player-score');
+    const opponentScore = document.querySelector('#opponent-container .player-score');
+    let playerColor = '';
+    let opponentColor = '';
 
     let redPlayer = {
         'card1': 6,
@@ -409,11 +414,17 @@
         'points': 0
     };
 
-    function proceedToNext() {
-
+    function submitMove(move) {
+        miscMessage.innerHTML = "Waiting for opponent...";
+        cardButtons.forEach(cardButton => {
+            cardButton.disabled = true;
+        });
+        socket.emit('move', move);
     }
 
     function updatePoints() {
+        redPlayer['points'] = 0;
+        bluePlayer['points'] = 0;
         for (let x = 0; x < 6; x++) {
             if (redPlayer[`column${1+x}`] > bluePlayer[`column${1+x}`]) redPlayer['points'] += (6-x);
             else if (redPlayer[`column${1+x}`] < bluePlayer[`column${1+x}`]) bluePlayer['points'] += (6-x);
@@ -421,11 +432,12 @@
             if (redPlayer[`row${1+x}`] > bluePlayer[`row${1+x}`]) redPlayer['points'] += (6-x);
             else if (redPlayer[`row${1+x}`] < bluePlayer[`row${1+x}`]) bluePlayer['points'] += (6-x);
         }
+
+        playerScore.innerText = `👑${playerColor == 'red' ? redPlayer['points'] : bluePlayer['points']}`;
+        opponentScore.innerText = `👑${opponentColor == 'red' ? redPlayer['points'] : bluePlayer['points']}`;
     }
 
-    function updateGame(history, color) {
-        let playerColor = color;
-        let opponentColor = color == 'red' ? 'blue' : 'red';
+    function updateGame(history) {
         let currentRound = 1;
         redPlayer = {
             'card1': 6,
@@ -472,18 +484,19 @@
             'points': 0
         };
         let squares = [];
+        console.log("HISTORY", history);
         for (let i = 0; i < history.length; i=i+2) {
             if (history[i] == 'x' || history[i+1] == 'x') {
                 return;
             }
 
-            miscMessage.innerText = '';
+            miscMessage.innerHTML = '';
 
             // Display A-F for the round.
             if ((i >= 0 && i < 12) || (i >= 26 && i < 38) || (i >= 52 && i < 64) || (i >= 78 && i < 90) || (i >= 104 && i < 116) || (i >= 130 && i < 142)) {
                 squares = [];
 
-                squares.append({
+                squares.push({
                     'column': history[i],
                     'row': history[i+1],
                     'square': parseInt(history[i]) + ((parseInt(history[i+1])-1) * 6)
@@ -492,7 +505,7 @@
 
                 i+=2;
                 
-                squares.append({
+                squares.push({
                     'column': history[i],
                     'row': history[i+1],
                     'square': parseInt(history[i]) + ((parseInt(history[i+1])-1) * 6)
@@ -501,7 +514,7 @@
 
                 i+=2;
                 
-                squares.append({
+                squares.push({
                     'column': history[i],
                     'row': history[i+1],
                     'square': parseInt(history[i]) + ((parseInt(history[i+1])-1) * 6)
@@ -510,7 +523,7 @@
 
                 i+=2;
                 
-                squares.append({
+                squares.push({
                     'column': history[i],
                     'row': history[i+1],
                     'square': parseInt(history[i]) + ((parseInt(history[i+1])-1) * 6)
@@ -519,7 +532,7 @@
 
                 i+=2;
                 
-                squares.append({
+                squares.push({
                     'column': history[i],
                     'row': history[i+1],
                     'square': parseInt(history[i]) + ((parseInt(history[i+1])-1) * 6)
@@ -528,7 +541,7 @@
 
                 i+=2;
                 
-                squares.append({
+                squares.push({
                     'column': history[i],
                     'row': history[i+1],
                     'square': parseInt(history[i]) + ((parseInt(history[i+1])-1) * 6)
@@ -542,8 +555,6 @@
             if ((i >= 12 && i < 24) || (i >= 38 && i < 50) || (i >= 64 && i < 76) || (i >= 90 && i < 102) || (i >= 116 && i < 128) || (i >= 142 && i < 154)) {
                 redPlayer[`card${history[i]}`] -= 1;
                 bluePlayer[`card${history[i+1]}`] -= 1;
-                
-                // disable buttons accordingly later
 
                 let squaresIndex = 0;
 
@@ -571,28 +582,27 @@
                 else if (i % 26 == 22) {
                     currentRound += 1;
                     gameRound.innerText = `Proceed to Round ${currentRound}`;
-                    miscMessage.innerHTML = `<button class="" onclick="proceedToNext">Proceed</button>`;
+                    miscMessage.innerHTML = `<button class="" onclick="submitMove('1')">Proceed</button>`;
                     squaresIndex = 5;
                 }
                 
                 document.getElementById(`square-${squares[squaresIndex]['square']}`).innerText = '';
                 document.getElementById(`square-${squares[squaresIndex]['square']}`).classList.remove('color-red', 'color-blue', 'color-gray');
                 if (parseInt(history[i]) > parseInt(history[i+1])) {
-                    document.getElementById(`square-${squares[squaresIndex]['square']}`).classList.append('color-red');
+                    document.getElementById(`square-${squares[squaresIndex]['square']}`).classList.add('color-red');
                     redPlayer['wins'] += 1;
                     redPlayer[`column${squares[squaresIndex]['column']}`] += squares[squaresIndex]['row'];
                     redPlayer[`row${squares[squaresIndex]['row']}`] += squares[squaresIndex]['column'];
                 }
                 else if (parseInt(history[i]) < parseInt(history[i+1])) {
-                    document.getElementById(`square-${squares[squaresIndex]['square']}`).classList.append('color-blue');
+                    document.getElementById(`square-${squares[squaresIndex]['square']}`).classList.add('color-blue');
                     bluePlayer['wins'] += 1;
                     bluePlayer[`column${squares[squaresIndex]['column']}`] += squares[squaresIndex]['row'];
                     bluePlayer[`row${squares[squaresIndex]['row']}`] += squares[squaresIndex]['column'];
                 }
                 else {
-                    document.getElementById(`square-${squares[squaresIndex]['square']}`).classList.append('color-gray');
+                    document.getElementById(`square-${squares[squaresIndex]['square']}`).classList.add('color-gray');
                 }
-                    
                 
                 let squareColumns = document.querySelectorAll(`.square-vertical-divider.column-${squares[squaresIndex]['column']}`);
                 let squareRows = document.querySelectorAll(`.square-horizontal-divider.row-${squares[squaresIndex]['row']}`);
@@ -600,51 +610,51 @@
                 if (redPlayer[`column${squares[squaresIndex]['column']}`] > bluePlayer[`column${squares[squaresIndex]['column']}`]) {
                     squareColumns.forEach(column => {
                         column.classList.remove('color-red-light', 'color-blue-light', 'color-gray-light');
-                        column.classList.append('color-red-light');
+                        column.classList.add('color-red-light');
                     });
-                    document.querySelector(`.square-points.column-${squares[squaresIndex]['column']}`).remove('color-red', 'color-blue', 'color-gray');
-                    document.querySelector(`.square-points.column-${squares[squaresIndex]['column']}`).append('color-red');
+                    document.querySelector(`.square-points.column-${squares[squaresIndex]['column']}`).classList.remove('color-red', 'color-blue', 'color-gray');
+                    document.querySelector(`.square-points.column-${squares[squaresIndex]['column']}`).classList.add('color-red');
                 }
                 else if (redPlayer[`column${squares[squaresIndex]['column']}`] < bluePlayer[`column${squares[squaresIndex]['column']}`]) {
                     squareColumns.forEach(column => {
                         column.classList.remove('color-red-light', 'color-blue-light', 'color-gray-light');
-                        column.classList.append('color-blue-light');
+                        column.classList.add('color-blue-light');
                     });
-                    document.querySelector(`.square-points.column-${squares[squaresIndex]['column']}`).remove('color-red', 'color-blue', 'color-gray');
-                    document.querySelector(`.square-points.column-${squares[squaresIndex]['column']}`).append('color-blue');
+                    document.querySelector(`.square-points.column-${squares[squaresIndex]['column']}`).classList.remove('color-red', 'color-blue', 'color-gray');
+                    document.querySelector(`.square-points.column-${squares[squaresIndex]['column']}`).classList.add('color-blue');
                 }
                 else {
                     squareColumns.forEach(column => {
                         column.classList.remove('color-red-light', 'color-blue-light', 'color-gray-light');
-                        column.classList.append('color-gray-light');
+                        column.classList.add('color-gray-light');
                     });
-                    document.querySelector(`.square-points.column-${squares[squaresIndex]['column']}`).remove('color-red', 'color-blue', 'color-gray');
-                    document.querySelector(`.square-points.column-${squares[squaresIndex]['column']}`).append('color-gray');
+                    document.querySelector(`.square-points.column-${squares[squaresIndex]['column']}`).classList.remove('color-red', 'color-blue', 'color-gray');
+                    document.querySelector(`.square-points.column-${squares[squaresIndex]['column']}`).classList.add('color-gray');
                 }
 
                 if (redPlayer[`row${squares[squaresIndex]['row']}`] > bluePlayer[`row${squares[squaresIndex]['row']}`]) {
                     squareRows.forEach(row => {
                         row.classList.remove('color-red-light', 'color-blue-light', 'color-gray-light');
-                        row.classList.append('color-red-light');
+                        row.classList.add('color-red-light');
                     });
-                    document.querySelector(`.square-points.row-${squares[squaresIndex]['row']}`).remove('color-red', 'color-blue', 'color-gray');
-                    document.querySelector(`.square-points.row-${squares[squaresIndex]['row']}`).append('color-red');
+                    document.querySelector(`.square-points.row-${squares[squaresIndex]['row']}`).classList.remove('color-red', 'color-blue', 'color-gray');
+                    document.querySelector(`.square-points.row-${squares[squaresIndex]['row']}`).classList.add('color-red');
                 }
-                else if (redPlayer[`row${squares[squaresIndex]['row']}`] > bluePlayer[`row${squares[squaresIndex]['row']}`]) {
+                else if (redPlayer[`row${squares[squaresIndex]['row']}`] < bluePlayer[`row${squares[squaresIndex]['row']}`]) {
                     squareRows.forEach(row => {
                         row.classList.remove('color-red-light', 'color-blue-light', 'color-gray-light');
-                        row.classList.append('color-blue-light');
+                        row.classList.add('color-blue-light');
                     });
-                    document.querySelector(`.square-points.row-${squares[squaresIndex]['row']}`).remove('color-red', 'color-blue', 'color-gray');
-                    document.querySelector(`.square-points.row-${squares[squaresIndex]['row']}`).append('color-blue');
+                    document.querySelector(`.square-points.row-${squares[squaresIndex]['row']}`).classList.remove('color-red', 'color-blue', 'color-gray');
+                    document.querySelector(`.square-points.row-${squares[squaresIndex]['row']}`).classList.add('color-blue');
                 }
                 else {
                     squareRows.forEach(row => {
                         row.classList.remove('color-red-light', 'color-blue-light', 'color-gray-light');
-                        row.classList.append('color-gray-light');
+                        row.classList.add('color-gray-light');
                     });
-                    document.querySelector(`.square-points.row-${squares[squaresIndex]['row']}`).remove('color-red', 'color-blue', 'color-gray');
-                    document.querySelector(`.square-points.row-${squares[squaresIndex]['row']}`).append('color-gray');
+                    document.querySelector(`.square-points.row-${squares[squaresIndex]['row']}`).classList.remove('color-red', 'color-blue', 'color-gray');
+                    document.querySelector(`.square-points.row-${squares[squaresIndex]['row']}`).classList.add('color-gray');
                 }
 
                 updatePoints();
@@ -662,8 +672,50 @@
             if (i % 26 == 24) {
                 gameRound.innerText = `Round ${currentRound}A`;
             }
-        }
 
+            document.querySelector('#player-card-0 button').disabled = false;
+            if (playerColor == 'red') {
+                if (redPlayer['card1'] != 0) document.querySelector('#player-card-1 button').disabled = false;
+                if (redPlayer['card2'] != 0) document.querySelector('#player-card-2 button').disabled = false;
+                if (redPlayer['card3'] != 0) document.querySelector('#player-card-3 button').disabled = false;
+                if (redPlayer['card4'] != 0) document.querySelector('#player-card-4 button').disabled = false;
+                if (redPlayer['card5'] != 0) document.querySelector('#player-card-5 button').disabled = false;
+                if (redPlayer['card6'] != 0) document.querySelector('#player-card-6 button').disabled = false;
+                document.querySelector('#player-card-1 .card-quantity').innerText = redPlayer['card1'];
+                document.querySelector('#player-card-2 .card-quantity').innerText = redPlayer['card2'];
+                document.querySelector('#player-card-3 .card-quantity').innerText = redPlayer['card3'];
+                document.querySelector('#player-card-4 .card-quantity').innerText = redPlayer['card4'];
+                document.querySelector('#player-card-5 .card-quantity').innerText = redPlayer['card5'];
+                document.querySelector('#player-card-6 .card-quantity').innerText = redPlayer['card6'];
+                document.querySelector('#opponent-card-1 .card-quantity').innerText = bluePlayer['card1'];
+                document.querySelector('#opponent-card-2 .card-quantity').innerText = bluePlayer['card2'];
+                document.querySelector('#opponent-card-3 .card-quantity').innerText = bluePlayer['card3'];
+                document.querySelector('#opponent-card-4 .card-quantity').innerText = bluePlayer['card4'];
+                document.querySelector('#opponent-card-5 .card-quantity').innerText = bluePlayer['card5'];
+                document.querySelector('#opponent-card-6 .card-quantity').innerText = bluePlayer['card6'];
+            }
+            else if (playerColor == 'blue') {
+                if (bluePlayer['card1'] != 0) document.querySelector('#player-card-1 button').disabled = false;
+                if (bluePlayer['card2'] != 0) document.querySelector('#player-card-2 button').disabled = false;
+                if (bluePlayer['card3'] != 0) document.querySelector('#player-card-3 button').disabled = false;
+                if (bluePlayer['card4'] != 0) document.querySelector('#player-card-4 button').disabled = false;
+                if (bluePlayer['card5'] != 0) document.querySelector('#player-card-5 button').disabled = false;
+                if (bluePlayer['card6'] != 0) document.querySelector('#player-card-6 button').disabled = false;
+                document.querySelector('#player-card-1 .card-quantity').innerText = bluePlayer['card1'];
+                document.querySelector('#player-card-2 .card-quantity').innerText = bluePlayer['card2'];
+                document.querySelector('#player-card-3 .card-quantity').innerText = bluePlayer['card3'];
+                document.querySelector('#player-card-4 .card-quantity').innerText = bluePlayer['card4'];
+                document.querySelector('#player-card-5 .card-quantity').innerText = bluePlayer['card5'];
+                document.querySelector('#player-card-6 .card-quantity').innerText = bluePlayer['card6'];
+                document.querySelector('#opponent-card-1 .card-quantity').innerText = redPlayer['card1'];
+                document.querySelector('#opponent-card-2 .card-quantity').innerText = redPlayer['card2'];
+                document.querySelector('#opponent-card-3 .card-quantity').innerText = redPlayer['card3'];
+                document.querySelector('#opponent-card-4 .card-quantity').innerText = redPlayer['card4'];
+                document.querySelector('#opponent-card-5 .card-quantity').innerText = redPlayer['card5'];
+                document.querySelector('#opponent-card-6 .card-quantity').innerText = redPlayer['card6'];
+            }
+
+        }
 
 //     for character in history
 //     if index = 0-11, 26-37, 52-63, 78-89, 104-115, 130-141: add A-F at respective squares
@@ -673,8 +725,8 @@
 
     socket.on('game_connection', (response) => {
         if (response.color) {
-            let playerColor = response.color;
-            let opponentColor = response.color == 'red' ? 'blue' : 'red';
+            playerColor = response.color;
+            opponentColor = response.color == 'red' ? 'blue' : 'red';
             playerContainer.classList.remove('color-gray')
             playerContainer.classList.add(`color-${playerColor}`)
             opponentContainer.classList.remove('color-gray')
@@ -687,16 +739,13 @@
             });
         }
         showToast(response.message);
-    });
-
-    socket.on('self_update', (response) => {
-        miscMessage.innerText = response.message;
+        if (response.start) {
+            updateGame(response.history);
+        }
     });
 
     socket.on('game_update', (response) => {
-        // update game log
-        // update board
-        // update cards
+        updateGame(response.history);
     });
 </script>
 {% endblock %}
