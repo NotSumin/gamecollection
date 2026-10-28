@@ -92,17 +92,35 @@
     width: 100%;
     height: 40px;
     font-size: 20px;
-    /* background-color: #60e776; */
+}
+
+#misc-message button {
+    width: 100%;
+    padding: 5px;
 }
 
 .administration {
     width: 360px;
-    background-color: blue;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
-.game-log {
+.game-log-header {
     width: 100%;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.5);
+    font-size: 20px;
+    text-align: center;
+}
 
+#game-log {
+    width: 100%;
+    height: 520px;
+    background-color: rgba(255, 255, 255, 0.5);
+    overflow: auto;
+    font-size: 12px;
 }
 
 .rules-button {
@@ -205,6 +223,10 @@
 .points-gray {
     box-sizing: border-box;
     border: 2px solid #888;
+}
+
+.color-yellow {
+    background-color: #f6ff91;
 }
 
 .color-red {

@@ -5,6 +5,11 @@
 {% endblock %}
 
 {% block content %}
+<!--todo:
+default colors, white for ties? or lighter gray
+color square yellow if it's currently up for bid
+game log messages
+keep connection on refresh-->
 <div class="main-container">
     <div class="player-containers">
         <div class="player-containers-top">
@@ -82,7 +87,7 @@
                     </div>
                 </div>
             </div>
-            <div id="misc-message"></div>
+            <div id="misc-message" class="mt-10"></div>
         </div>
     </div>
     <div class="game-container">
@@ -346,9 +351,8 @@
         </div>
     </div>
     <div class="administration">
-        <div class="game-log">
-    <!--        self-explanatory-->
-        </div>
+        <p class="game-log-header">Game Log</p>
+        <div id="game-log"></div>
         <button class="rules-button">Rules</button>
     </div>
 </div>
@@ -362,6 +366,7 @@
     const playerCardQuantity = document.querySelectorAll('#player-container .card-quantity');
     const opponentCardQuantity = document.querySelectorAll('#opponent-container .card-quantity');
     const miscMessage = document.getElementById('misc-message');
+    const gameLog = document.getElementById('game-log');
     const gameRound = document.getElementById('game-round');
     const cardButtons = document.querySelectorAll('#player-container .card-button');
     const playerScore = document.querySelector('#player-container .player-score');
@@ -439,6 +444,8 @@
 
     function updateGame(history) {
         let currentRound = 1;
+        gameLog.innerHTML = '';
+        gameLog.insertAdjacentHTML('beforeend', `<p>Game start</p>`);
         redPlayer = {
             'card1': 6,
             'card2': 5,
@@ -502,6 +509,10 @@
                     'square': parseInt(history[i]) + ((parseInt(history[i+1])-1) * 6)
                 });
                 document.getElementById(`square-${squares[0]['square']}`).innerText = "A";
+                document.getElementById(`square-${squares[0]['square']}`).classList.add('color-yellow');
+
+                gameLog.insertAdjacentHTML('beforeend', `<p>Round ${currentRound} squares have been assigned</p>`);
+                gameLog.insertAdjacentHTML('beforeend', `<p>A: (${history[i]}, ${history[i+1]})</p>`);
 
                 i+=2;
                 
@@ -512,6 +523,7 @@
                 });
                 document.getElementById(`square-${squares[1]['square']}`).innerText = "B";
 
+                gameLog.insertAdjacentHTML('beforeend', `<p>B: (${history[i]}, ${history[i+1]})</p>`);
                 i+=2;
                 
                 squares.push({
@@ -520,6 +532,8 @@
                     'square': parseInt(history[i]) + ((parseInt(history[i+1])-1) * 6)
                 });
                 document.getElementById(`square-${squares[2]['square']}`).innerText = "C";
+
+                gameLog.insertAdjacentHTML('beforeend', `<p>C: (${history[i]}, ${history[i+1]})</p>`);
 
                 i+=2;
                 
@@ -530,6 +544,8 @@
                 });
                 document.getElementById(`square-${squares[3]['square']}`).innerText = "D";
 
+                gameLog.insertAdjacentHTML('beforeend', `<p>D: (${history[i]}, ${history[i+1]})</p>`);
+
                 i+=2;
                 
                 squares.push({
@@ -539,6 +555,8 @@
                 });
                 document.getElementById(`square-${squares[4]['square']}`).innerText = "E";
 
+                gameLog.insertAdjacentHTML('beforeend', `<p>E: (${history[i]}, ${history[i+1]})</p>`);
+
                 i+=2;
                 
                 squares.push({
@@ -547,6 +565,8 @@
                     'square': parseInt(history[i]) + ((parseInt(history[i+1])-1) * 6)
                 });
                 document.getElementById(`square-${squares[5]['square']}`).innerText = "F";
+
+                gameLog.insertAdjacentHTML('beforeend', `<p>F: (${history[i]}, ${history[i+1]})</p>`);
 
                 gameRound.innerText = `Round ${currentRound}A`;
             }
@@ -561,25 +581,52 @@
                 if (i % 26 == 12) {
                     gameRound.innerText = `Round ${currentRound}B`;
                     squaresIndex = 0;
-                    
+
+                    gameLog.insertAdjacentHTML('beforeend', `<p>Round ${currentRound}A (${squares[0]['column']}, ${squares[0]['row']})</p>`);
+                    gameLog.insertAdjacentHTML('beforeend', `<p>Red played ${history[i]}, Blue played ${history[i+1]}</p>`);
+
+                    document.getElementById(`square-${squares[1]['square']}`).classList.add('color-yellow');
                 }
                 else if (i % 26 == 14) {
                     gameRound.innerText = `Round ${currentRound}C`;
                     squaresIndex = 1;
+
+                    gameLog.insertAdjacentHTML('beforeend', `<p>Round ${currentRound}B (${squares[1]['column']}, ${squares[1]['row']})</p>`);
+                    gameLog.insertAdjacentHTML('beforeend', `<p>Red played ${history[i]}, Blue played ${history[i+1]}</p>`);
+
+                    document.getElementById(`square-${squares[2]['square']}`).classList.add('color-yellow');
                 }
                 else if (i % 26 == 16) {
                     gameRound.innerText = `Round ${currentRound}D`;
                     squaresIndex = 2;
+
+                    gameLog.insertAdjacentHTML('beforeend', `<p>Round ${currentRound}C (${squares[2]['column']}, ${squares[2]['row']})</p>`);
+                    gameLog.insertAdjacentHTML('beforeend', `<p>Red played ${history[i]}, Blue played ${history[i+1]}</p>`);
+
+                    document.getElementById(`square-${squares[3]['square']}`).classList.add('color-yellow');
                 }
                 else if (i % 26 == 18) {
                     gameRound.innerText = `Round ${currentRound}E`;
                     squaresIndex = 3;
+
+                    gameLog.insertAdjacentHTML('beforeend', `<p>Round ${currentRound}D (${squares[3]['column']}, ${squares[3]['row']})</p>`);
+                    gameLog.insertAdjacentHTML('beforeend', `<p>Red played ${history[i]}, Blue played ${history[i+1]}</p>`);
+
+                    document.getElementById(`square-${squares[4]['square']}`).classList.add('color-yellow');
                 }
                 else if (i % 26 == 20) {
                     gameRound.innerText = `Round ${currentRound}F`;
                     squaresIndex = 4;
+
+                    gameLog.insertAdjacentHTML('beforeend', `<p>Round ${currentRound}E (${squares[4]['column']}, ${squares[4]['row']})</p>`);
+                    gameLog.insertAdjacentHTML('beforeend', `<p>Red played ${history[i]}, Blue played ${history[i+1]}</p>`);
+
+                    document.getElementById(`square-${squares[5]['square']}`).classList.add('color-yellow');
                 }
                 else if (i % 26 == 22) {
+                    gameLog.insertAdjacentHTML('beforeend', `<p>Round ${currentRound}F (${squares[5]['column']}, ${squares[5]['row']})</p>`);
+                    gameLog.insertAdjacentHTML('beforeend', `<p>Red played ${history[i]}, Blue played ${history[i+1]}</p>`);
+
                     currentRound += 1;
                     gameRound.innerText = `Proceed to Round ${currentRound}`;
                     miscMessage.innerHTML = `<button class="" onclick="submitMove('1')">Proceed</button>`;
@@ -587,7 +634,7 @@
                 }
                 
                 document.getElementById(`square-${squares[squaresIndex]['square']}`).innerText = '';
-                document.getElementById(`square-${squares[squaresIndex]['square']}`).classList.remove('color-red', 'color-blue', 'color-gray');
+                document.getElementById(`square-${squares[squaresIndex]['square']}`).classList.remove('color-yellow', 'color-red', 'color-blue', 'color-gray');
                 if (parseInt(history[i]) > parseInt(history[i+1])) {
                     document.getElementById(`square-${squares[squaresIndex]['square']}`).classList.add('color-red');
                     redPlayer['wins'] += 1;
@@ -612,7 +659,7 @@
                         column.classList.remove('color-red-light', 'color-blue-light', 'color-gray-light');
                         column.classList.add('color-red-light');
                     });
-                    document.querySelector(`.square-points.column-${squares[squaresIndex]['column']}`).classList.remove('color-red', 'color-blue', 'color-gray');
+                    document.querySelector(`.square-points.column-${squares[squaresIndex]['column']}`).classList.remove('color-yellow', 'color-red', 'color-blue', 'color-gray');
                     document.querySelector(`.square-points.column-${squares[squaresIndex]['column']}`).classList.add('color-red');
                 }
                 else if (redPlayer[`column${squares[squaresIndex]['column']}`] < bluePlayer[`column${squares[squaresIndex]['column']}`]) {
@@ -620,7 +667,7 @@
                         column.classList.remove('color-red-light', 'color-blue-light', 'color-gray-light');
                         column.classList.add('color-blue-light');
                     });
-                    document.querySelector(`.square-points.column-${squares[squaresIndex]['column']}`).classList.remove('color-red', 'color-blue', 'color-gray');
+                    document.querySelector(`.square-points.column-${squares[squaresIndex]['column']}`).classList.remove('color-yellow', 'color-red', 'color-blue', 'color-gray');
                     document.querySelector(`.square-points.column-${squares[squaresIndex]['column']}`).classList.add('color-blue');
                 }
                 else {
@@ -628,7 +675,7 @@
                         column.classList.remove('color-red-light', 'color-blue-light', 'color-gray-light');
                         column.classList.add('color-gray-light');
                     });
-                    document.querySelector(`.square-points.column-${squares[squaresIndex]['column']}`).classList.remove('color-red', 'color-blue', 'color-gray');
+                    document.querySelector(`.square-points.column-${squares[squaresIndex]['column']}`).classList.remove('color-yellow', 'color-red', 'color-blue', 'color-gray');
                     document.querySelector(`.square-points.column-${squares[squaresIndex]['column']}`).classList.add('color-gray');
                 }
 
@@ -637,7 +684,7 @@
                         row.classList.remove('color-red-light', 'color-blue-light', 'color-gray-light');
                         row.classList.add('color-red-light');
                     });
-                    document.querySelector(`.square-points.row-${squares[squaresIndex]['row']}`).classList.remove('color-red', 'color-blue', 'color-gray');
+                    document.querySelector(`.square-points.row-${squares[squaresIndex]['row']}`).classList.remove('color-yellow', 'color-red', 'color-blue', 'color-gray');
                     document.querySelector(`.square-points.row-${squares[squaresIndex]['row']}`).classList.add('color-red');
                 }
                 else if (redPlayer[`row${squares[squaresIndex]['row']}`] < bluePlayer[`row${squares[squaresIndex]['row']}`]) {
@@ -645,7 +692,7 @@
                         row.classList.remove('color-red-light', 'color-blue-light', 'color-gray-light');
                         row.classList.add('color-blue-light');
                     });
-                    document.querySelector(`.square-points.row-${squares[squaresIndex]['row']}`).classList.remove('color-red', 'color-blue', 'color-gray');
+                    document.querySelector(`.square-points.row-${squares[squaresIndex]['row']}`).classList.remove('color-yellow', 'color-red', 'color-blue', 'color-gray');
                     document.querySelector(`.square-points.row-${squares[squaresIndex]['row']}`).classList.add('color-blue');
                 }
                 else {
@@ -653,7 +700,7 @@
                         row.classList.remove('color-red-light', 'color-blue-light', 'color-gray-light');
                         row.classList.add('color-gray-light');
                     });
-                    document.querySelector(`.square-points.row-${squares[squaresIndex]['row']}`).classList.remove('color-red', 'color-blue', 'color-gray');
+                    document.querySelector(`.square-points.row-${squares[squaresIndex]['row']}`).classList.remove('color-yellow', 'color-red', 'color-blue', 'color-gray');
                     document.querySelector(`.square-points.row-${squares[squaresIndex]['row']}`).classList.add('color-gray');
                 }
 
@@ -675,12 +722,12 @@
 
             document.querySelector('#player-card-0 button').disabled = false;
             if (playerColor == 'red') {
-                if (redPlayer['card1'] != 0) document.querySelector('#player-card-1 button').disabled = false;
-                if (redPlayer['card2'] != 0) document.querySelector('#player-card-2 button').disabled = false;
-                if (redPlayer['card3'] != 0) document.querySelector('#player-card-3 button').disabled = false;
-                if (redPlayer['card4'] != 0) document.querySelector('#player-card-4 button').disabled = false;
-                if (redPlayer['card5'] != 0) document.querySelector('#player-card-5 button').disabled = false;
-                if (redPlayer['card6'] != 0) document.querySelector('#player-card-6 button').disabled = false;
+                document.querySelector('#player-card-1 button').disabled = redPlayer['card1'] != 0 ? false : true;
+                document.querySelector('#player-card-2 button').disabled = redPlayer['card2'] != 0 ? false : true;
+                document.querySelector('#player-card-3 button').disabled = redPlayer['card3'] != 0 ? false : true;
+                document.querySelector('#player-card-4 button').disabled = redPlayer['card4'] != 0 ? false : true;
+                document.querySelector('#player-card-5 button').disabled = redPlayer['card5'] != 0 ? false : true;
+                document.querySelector('#player-card-6 button').disabled = redPlayer['card6'] != 0 ? false : true;
                 document.querySelector('#player-card-1 .card-quantity').innerText = redPlayer['card1'];
                 document.querySelector('#player-card-2 .card-quantity').innerText = redPlayer['card2'];
                 document.querySelector('#player-card-3 .card-quantity').innerText = redPlayer['card3'];
@@ -695,12 +742,12 @@
                 document.querySelector('#opponent-card-6 .card-quantity').innerText = bluePlayer['card6'];
             }
             else if (playerColor == 'blue') {
-                if (bluePlayer['card1'] != 0) document.querySelector('#player-card-1 button').disabled = false;
-                if (bluePlayer['card2'] != 0) document.querySelector('#player-card-2 button').disabled = false;
-                if (bluePlayer['card3'] != 0) document.querySelector('#player-card-3 button').disabled = false;
-                if (bluePlayer['card4'] != 0) document.querySelector('#player-card-4 button').disabled = false;
-                if (bluePlayer['card5'] != 0) document.querySelector('#player-card-5 button').disabled = false;
-                if (bluePlayer['card6'] != 0) document.querySelector('#player-card-6 button').disabled = false;
+                document.querySelector('#player-card-1 button').disabled = bluePlayer['card1'] != 0 ? false : true;
+                document.querySelector('#player-card-2 button').disabled = bluePlayer['card2'] != 0 ? false : true;
+                document.querySelector('#player-card-3 button').disabled = bluePlayer['card3'] != 0 ? false : true;
+                document.querySelector('#player-card-4 button').disabled = bluePlayer['card4'] != 0 ? false : true;
+                document.querySelector('#player-card-5 button').disabled = bluePlayer['card5'] != 0 ? false : true;
+                document.querySelector('#player-card-6 button').disabled = bluePlayer['card6'] != 0 ? false : true;
                 document.querySelector('#player-card-1 .card-quantity').innerText = bluePlayer['card1'];
                 document.querySelector('#player-card-2 .card-quantity').innerText = bluePlayer['card2'];
                 document.querySelector('#player-card-3 .card-quantity').innerText = bluePlayer['card3'];
