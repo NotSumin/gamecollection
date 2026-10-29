@@ -2,6 +2,7 @@ from collection import socketio
 from flask import Blueprint, render_template, request, redirect, url_for, session
 from flask_socketio import join_room, leave_room, emit
 import random
+import uuid
 
 # Blueprint: 라우팅 함수를 체계적으로 관리
 bp = Blueprint('square_goofspiel', __name__, url_prefix='/square_goofspiel')
@@ -18,6 +19,8 @@ def initialize_history():
 
 @bp.route('/<game_id>')
 def get_room(game_id):
+    if 'user_id' not in session:
+        session['user_id'] = str(uuid.uuid4())
     session['game_id'] = game_id
     return render_template("game/square_goofspiel.html")
 
@@ -25,6 +28,7 @@ def get_room(game_id):
 def on_connect():
     # todo: error handling in case someone manually enters url without creating game
     user_id = session.get('user_id')
+    print(user_id)
     game_id = session.get('game_id')
     join_room(game_id)
     start = False
@@ -39,9 +43,8 @@ def on_connect():
             'blue_move': None,
             'history': initialize_history()
         }
-    else:
-        if active_games[game_id]['blue'] == '':
-            active_games[game_id]['blue'] = user_id
+    elif active_games[game_id]['red'] != user_id and active_games[game_id]['blue'] == '':
+        active_games[game_id]['blue'] = user_id
 
     if active_games[game_id]['red'] != '' and active_games[game_id]['blue'] != '':
         start = True
