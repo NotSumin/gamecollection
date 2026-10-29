@@ -24,14 +24,14 @@ def get_room(game_id):
 @socketio.on('connect')
 def on_connect():
     # todo: error handling in case someone manually enters url without creating game
-    sid = request.sid
+    user_id = session.get('user_id')
     game_id = session.get('game_id')
     join_room(game_id)
     start = False
 
     if active_games.get(game_id) is None:
         active_games[game_id] = {
-            'red': sid,
+            'red': user_id,
             'red_connected': True,
             'red_move': None,
             'blue': '',
@@ -41,36 +41,36 @@ def on_connect():
         }
     else:
         if active_games[game_id]['blue'] == '':
-            active_games[game_id]['blue'] = sid
+            active_games[game_id]['blue'] = user_id
 
     if active_games[game_id]['red'] != '' and active_games[game_id]['blue'] != '':
         start = True
 
-    if active_games[game_id]['red'] == sid:
+    if active_games[game_id]['red'] == user_id:
         active_games[game_id]['red_connected'] = True
-        emit('game_connection', {'message': 'You have connected as Red!', 'color': 'red', 'history': active_games[game_id]['history'], 'start': start})
-        emit('game_connection', {'message': 'Your opponent has connected as Red!', 'color': 'blue', 'history': active_games[game_id]['history'], 'start': start}, to=game_id, include_self=False)
-    elif active_games[game_id]['blue'] == sid:
+        emit('game_connection', {'sender': user_id, 'message': 'You have connected as Red!', 'color': 'red', 'history': active_games[game_id]['history'], 'start': start})
+        emit('game_connection_other', {'sender': user_id, 'message': 'Your opponent has connected as Red!', 'color': 'blue', 'history': active_games[game_id]['history'], 'start': start}, to=game_id, include_self=False)
+    elif active_games[game_id]['blue'] == user_id:
         active_games[game_id]['blue_connected'] = True
-        emit('game_connection', {'message': 'You have connected as Blue!', 'color': 'blue', 'history': active_games[game_id]['history'], 'start': start})
-        emit('game_connection', {'message': 'Your opponent has connected as Blue!', 'color': 'red', 'history': active_games[game_id]['history'], 'start': start}, to=game_id, include_self=False)
+        emit('game_connection', {'sender': user_id, 'message': 'You have connected as Blue!', 'color': 'blue', 'history': active_games[game_id]['history'], 'start': start})
+        emit('game_connection_other', {'sender': user_id, 'message': 'Your opponent has connected as Blue!', 'color': 'red', 'history': active_games[game_id]['history'], 'start': start}, to=game_id, include_self=False)
 
     return
 
 @socketio.on('disconnect')
 def on_disconnect():
-    sid = request.sid
+    user_id = session.get('user_id')
     game_id = session.get('game_id')
     leave_room(game_id)
     to_remove = []
 
     for room, room_details in active_games.items():
-        if room_details['red'] == sid:
+        if room_details['red'] == user_id:
             room_details['red_connected'] = False
-            emit('game_connection', {'message': 'Red has disconnected!'}, to=game_id, include_self=False)
-        if room_details['blue'] == sid:
+            emit('game_connection_other', {'sender': user_id, 'message': 'Red has disconnected!'}, to=game_id, include_self=False)
+        if room_details['blue'] == user_id:
             room_details['blue_connected'] = False
-            emit('game_connection', {'message': 'Blue has disconnected!'}, to=game_id, include_self=False)
+            emit('game_connection_other', {'sender': user_id, 'message': 'Blue has disconnected!'}, to=game_id, include_self=False)
         if room_details['red_connected'] == False and room_details['blue_connected'] == False:
             to_remove.append(room)
 
@@ -81,11 +81,11 @@ def on_disconnect():
 
 @socketio.on('move')
 def on_move(move):
-    sid = request.sid
+    user_id = session.get('user_id')
     game_id = session.get('game_id')
-    if active_games[game_id]['red'] == sid:
+    if active_games[game_id]['red'] == user_id:
         active_games[game_id]['red_move'] = move
-    elif active_games[game_id]['blue'] == sid:
+    elif active_games[game_id]['blue'] == user_id:
         active_games[game_id]['blue_move'] = move
 
     if active_games[game_id]['red_move'] and active_games[game_id]['blue_move']:

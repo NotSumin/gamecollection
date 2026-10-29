@@ -112,7 +112,9 @@
     height: 40px;
     background-color: rgba(255, 255, 255, 0.5);
     font-size: 20px;
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #game-log {
@@ -120,12 +122,21 @@
     height: 520px;
     background-color: rgba(255, 255, 255, 0.5);
     overflow: auto;
-    font-size: 12px;
+    font-size: 14px;
+    padding: 10px;
 }
 
 .rules-button {
     width: 100%;
     height: 40px;
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #333;
+    background-color: #fff;
+    text-decoration: none;
+    cursor: pointer;
 }
 
 .game-container {
@@ -184,14 +195,14 @@
 .square-vertical-divider {
     width: 18px;
     height: 28px;
-    background-color: #cdffb6;
+    background-color: #eee;
     margin: 0 11px;
 }
 
 .square-horizontal-divider {
     width: 28px;
     height: 18px;
-    background-color: #cdffb6;
+    background-color: #eee;
 }
 
 .square-blank-divider {
@@ -215,14 +226,14 @@
     background-color: #fff;
 }
 
-.points-black {
+.points-pink {
     box-sizing: border-box;
-    border: 2px solid #333;
+    border: 3px solid #ff63f7;
 }
 
-.points-gray {
+.points-green {
     box-sizing: border-box;
-    border: 2px solid #888;
+    border: 3px solid #46ff70;
 }
 
 .color-yellow {
