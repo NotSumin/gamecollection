@@ -28,7 +28,6 @@ def get_room(game_id):
 def on_connect():
     # todo: error handling in case someone manually enters url without creating game
     user_id = session.get('user_id')
-    print(user_id)
     game_id = session.get('game_id')
     join_room(game_id)
     start = False

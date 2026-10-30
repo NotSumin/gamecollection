@@ -556,8 +556,8 @@ keep connection on refresh-->
                 i+=2;
                 
                 squares.push({
-                    'column': history[i],
-                    'row': history[i+1],
+                    'column': parseInt(history[i]),
+                    'row': parseInt(history[i+1]),
                     'square': parseInt(history[i]) + ((parseInt(history[i+1])-1) * 6)
                 });
                 document.getElementById(`square-${squares[5]['square']}`).innerText = "F";
@@ -624,28 +624,35 @@ keep connection on refresh-->
                     gameLog.insertAdjacentHTML('beforeend', `<p>Red played ${history[i]}, Blue played ${history[i+1]}</p>`);
 
                     currentRound += 1;
-                    gameRound.innerText = `Proceed to Round ${currentRound}`;
-                    miscMessage.innerHTML = `<button class="" onclick="submitMove('1')">Proceed</button>`;
+
+                    if (i < 152) {
+                        gameRound.innerText = `Proceed to Round ${currentRound}`;
+                        miscMessage.innerHTML = `<button class="" onclick="submitMove('1')">Proceed</button>`;
+                    }
                     squaresIndex = 5;
                 }
+
+                console.log("BEFORE:", redPlayer, bluePlayer);
                 
                 document.getElementById(`square-${squares[squaresIndex]['square']}`).innerText = '';
                 document.getElementById(`square-${squares[squaresIndex]['square']}`).classList.remove('color-yellow', 'color-red', 'color-blue', 'color-gray');
                 if (parseInt(history[i]) > parseInt(history[i+1])) {
                     document.getElementById(`square-${squares[squaresIndex]['square']}`).classList.add('color-red');
                     redPlayer['wins'] += 1;
-                    redPlayer[`column${squares[squaresIndex]['column']}`] += squares[squaresIndex]['row'];
-                    redPlayer[`row${squares[squaresIndex]['row']}`] += squares[squaresIndex]['column'];
+                    redPlayer[`column${squares[squaresIndex]['column']}`] += parseInt(squares[squaresIndex]['row']);
+                    redPlayer[`row${squares[squaresIndex]['row']}`] += parseInt(squares[squaresIndex]['column']);
                 }
                 else if (parseInt(history[i]) < parseInt(history[i+1])) {
                     document.getElementById(`square-${squares[squaresIndex]['square']}`).classList.add('color-blue');
                     bluePlayer['wins'] += 1;
-                    bluePlayer[`column${squares[squaresIndex]['column']}`] += squares[squaresIndex]['row'];
-                    bluePlayer[`row${squares[squaresIndex]['row']}`] += squares[squaresIndex]['column'];
+                    bluePlayer[`column${squares[squaresIndex]['column']}`] += parseInt(squares[squaresIndex]['row']);
+                    bluePlayer[`row${squares[squaresIndex]['row']}`] += parseInt(squares[squaresIndex]['column']);
                 }
                 else {
                     document.getElementById(`square-${squares[squaresIndex]['square']}`).classList.add('color-gray');
                 }
+
+                console.log("AFTER:", redPlayer, bluePlayer);
                 
                 let squareColumns = document.querySelectorAll(`.square-vertical-divider.column-${squares[squaresIndex]['column']}`);
                 let squareRows = document.querySelectorAll(`.square-horizontal-divider.row-${squares[squaresIndex]['row']}`);
